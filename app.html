@@ -1,6 +1,80 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0f1020"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="KADR AI"><meta name="description" content="KADR AI — интерактивная проверка ракурса, композиции и света до съёмки."><title>KADR AI — камера и подсказки</title><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/icon-192.png"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="css/styles.css"></head><body class="studio">
-<header class="studio-header"><a class="brand" href="index.html"><span class="brandmark">◉</span>KADR<span class="accent">AI</span></a><span class="studio-demo-tag">БЕТА · ДЕМО</span><a class="backlink" href="index.html">Главная ↗</a></header>
-<main class="studio-main"><div class="camera-column"><div class="studio-intro"><span class="eyebrow">ТВОЯ КАМЕРА · ТВОИ ПРАВИЛА</span><h1>Давай поймаем <em>тот самый кадр.</em></h1></div>
-<div class="camera-card"><div class="cam-toolbar"><span id="camStatus"><span class="status-dot"></span> Камера выключена</span><button id="flipCamera" class="icon-button" aria-label="Переключить камеру" title="Переключить камеру">⇄</button></div><div class="camera-stage" id="cameraStage"><video id="video" playsinline webkit-playsinline autoplay muted></video><canvas id="cameraCanvas" hidden></canvas><div class="camera-empty" id="emptyState"><div class="empty-icon">◉</div><h3>Включи камеру</h3><p>Проверим положение лица и поможем сделать кадр лучше.</p><button class="btn primary" id="startCamera">Включить камеру <span>↗</span></button><small>Нужно разрешение браузера · HTTPS</small></div><div class="guide-crosshair"><span class="guidetopleft"></span><span class="guidetopright"></span><span class="guidebottomleft"></span><span class="guidebottomright"></span><span class="center-line"></span></div><div id="livePrompt" class="live-prompt" hidden>Наведи камеру на лицо</div><div id="flash" class="flash"></div></div><div class="cam-controlbar"><button id="pauseCamera" class="cam-smallbtn" disabled>Выключить</button><button id="captureBtn" class="shutter" disabled aria-label="Сделать пробный кадр"><span></span></button><label class="cam-smallbtn file-upload">Загрузить фото<input type="file" accept="image/*" id="photoUpload" hidden></label></div></div><p class="privacy-line">⌁ Кадры не загружаются на наш сервер. Анализ положения лица запускается на устройстве.</p></div>
-<aside class="coach-panel"><span class="eyebrow">01 / РЕЖИМ СЪЁМКИ</span><div class="mode-select"><button class="mode active" data-mode="talking"><span>◧</span><strong>Говорящая голова</strong><small>Reels, сторис, экспертное видео</small></button><button class="mode" data-mode="selfie"><span>✧</span><strong>Красивое селфи</strong><small>Аватар, портрет, фото</small></button></div><div class="coach-widget"><div class="coach-title"><div><span class="eyebrow">02 / ПРОВЕРКА</span><h2>Режиссёр подскажет</h2></div><span class="ai-orb">✳</span></div><div class="main-tip" id="mainTip">Включи камеру или загрузи фото — и я подскажу, как улучшить композицию.</div><div class="tips-list" id="tipsList"><div class="tip"><span class="tipmark neutral">○</span><span>Расположи телефон на уровне глаз</span></div><div class="tip"><span class="tipmark neutral">○</span><span>Оставь немного места над головой</span></div><div class="tip"><span class="tipmark neutral">○</span><span>Повернись к мягкому источнику света</span></div></div><div class="coach-foot"><span id="analysisState">Ожидаем кадр</span><span id="scoreLabel">— / 3</span></div></div><div id="photoResult" class="result-widget" hidden><div class="result-header"><span>Результат пробного кадра</span><button id="closeResult" aria-label="Закрыть результат">×</button></div><img id="photoPreview" alt="Твой пробный снимок"><div id="resultText"></div><button class="btn ghost" id="downloadPhoto">Сохранить снимок ↧</button></div><div class="how-use"><strong>Как пользоваться</strong><p>Разреши доступ к камере, поставь телефон на устойчивую поверхность, выровняй лицо по подсказке. Нажми круглую кнопку, чтобы проверить освещение на стоп-кадре.</p></div><div class="beta-warning">Это прототип: подсказки по свету ориентировочные, не профессиональная оценка фотографии. Детектор лица зависит от браузера и загрузки модели.</div></aside></main>
-<script type="module" src="js/app.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff9ef">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="KADR AI">
+  <meta name="description" content="Кадрик — твой дружелюбный помощник по композиции и свету.">
+  <title>KADR AI — твой друг в кадре</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/studio.css">
+</head>
+<body class="studio" data-mood="hello">
+<svg class="sticker-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+  <symbol id="kadr-friend" viewBox="0 0 160 160">
+    <path d="M42 116 31 136M117 116l12 20" fill="none" stroke="#302b42" stroke-width="9" stroke-linecap="round"/>
+    <path d="m34 73-18-9m110 7 18-15" fill="none" stroke="#302b42" stroke-width="8" stroke-linecap="round"/>
+    <path d="m47 42 8-15h31l9 15" fill="#bcb0ff" stroke="#302b42" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="29" y="40" width="104" height="82" rx="27" fill="#bcb0ff" stroke="white" stroke-width="15"/>
+    <rect x="29" y="40" width="104" height="82" rx="27" fill="#bcb0ff" stroke="#302b42" stroke-width="5"/>
+    <rect x="42" y="55" width="78" height="51" rx="21" fill="#fffdf6"/>
+    <g class="friend-eyes" fill="#302b42"><ellipse cx="64" cy="76" rx="5" ry="8"/><ellipse cx="97" cy="76" rx="5" ry="8"/></g>
+    <path d="M72 91q9 9 18-1" fill="none" stroke="#302b42" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="51" cy="88" rx="7" ry="4" fill="#ff9c91"/><ellipse cx="109" cy="88" rx="7" ry="4" fill="#ff9c91"/>
+    <circle cx="118" cy="51" r="5" fill="#e6ff86"/>
+    <path d="m133 17 2 8 8 2-8 3-2 8-3-8-8-3 8-2Z" fill="#ff735f"/>
+  </symbol>
+  <symbol id="kadr-light" viewBox="0 0 64 64"><g stroke="#302b42" stroke-width="3" stroke-linecap="round"><path d="M32 5v6m0 42v6M5 32h6m42 0h6M13 13l5 5m28 28 5 5m0-38-5 5M18 46l-5 5"/><circle cx="32" cy="32" r="16" fill="#ffe36b"/><path d="M26 35q6 6 12 0" fill="none"/></g><g fill="#302b42"><circle cx="26" cy="29" r="2"/><circle cx="38" cy="29" r="2"/></g></symbol>
+  <symbol id="kadr-center" viewBox="0 0 64 64"><g fill="none" stroke="#302b42" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8H8v13m35-13h13v13M8 43v13h13m22 0h13V43"/><rect x="21" y="20" width="22" height="26" rx="10" fill="#bcb0ff"/><path d="m2 32 9-5v10Zm60 0-9-5v10Z" fill="#ff8877"/></g><circle cx="28" cy="30" r="2" fill="#302b42"/><circle cx="36" cy="30" r="2" fill="#302b42"/></symbol>
+  <symbol id="kadr-distance" viewBox="0 0 64 64"><g fill="none" stroke="#302b42" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="23" y="13" width="18" height="38" rx="6" fill="#a7e7ff"/><path d="M5 32h11m-6-6-6 6 6 6m49-6H48m6-6 6 6-6 6M29 44h6"/></g></symbol>
+  <symbol id="kadr-ready" viewBox="0 0 64 64"><path d="m32 4 7 9 11-1 2 11 9 9-9 8-2 12-11-1-7 9-8-9-11 1-2-12-9-8 9-9 2-11 11 1Z" fill="#d6f77c" stroke="#302b42" stroke-width="3" stroke-linejoin="round"/><path d="m20 32 8 8 16-17" fill="none" stroke="#302b42" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+<header class="studio-header">
+  <a class="brand" href="index.html" aria-label="KADR AI — на главную"><span class="brandmark">✳</span>KADR<span class="brand-ai">AI</span></a>
+  <span class="studio-demo-tag">ТВОЙ ДРУГ В КАДРЕ</span><a class="backlink" href="index.html">На главную ↗</a>
+</header>
+<main class="studio-main">
+  <div class="camera-column">
+    <div class="studio-intro"><span class="eyebrow"><span class="tiny-spark">✦</span> МАЛЕНЬКАЯ СЪЁМОЧНАЯ КОМАНДА</span><h1>Ты в кадре.<br><em>Я на подхвате.</em></h1><p>Включай камеру. Кадрик поможет со светом и композицией.</p></div>
+    <div class="camera-card">
+      <div class="cam-toolbar"><span id="camStatus"><span class="status-dot"></span>Камера выключена</span><button id="flipCamera" class="icon-button" aria-label="Переключить камеру" title="Переключить камеру">⇄</button></div>
+      <div class="camera-stage" id="cameraStage">
+        <video id="video" playsinline webkit-playsinline autoplay muted></video><canvas id="cameraCanvas" hidden></canvas>
+        <div class="camera-empty" id="emptyState">
+          <span class="hello-stamp">ДАВАЙ СНИМЕМ КРАСИВО!</span>
+          <svg class="friend-hero" aria-hidden="true"><use href="#kadr-friend"/></svg>
+          <h3>Привет! Я Кадрик.</h3><p>Буду рядом и подскажу,<br>что поправить перед снимком.</p>
+          <button class="btn primary" id="startCamera">Включить камеру <span aria-hidden="true">↗</span></button>
+          <small>Только с твоего разрешения</small>
+          <svg class="empty-sun" aria-hidden="true"><use href="#kadr-light"/></svg>
+        </div>
+        <div class="guide-crosshair"><span class="guidetopleft"></span><span class="guidetopright"></span><span class="guidebottomleft"></span><span class="guidebottomright"></span><span class="center-line"></span></div>
+        <div id="flash" class="flash"></div>
+      </div>
+      <div id="livePrompt" class="live-prompt" hidden><svg class="live-avatar" aria-hidden="true"><use href="#kadr-friend"/></svg><div><span class="live-sender">КАДРИК ПОДСКАЗЫВАЕТ</span><span id="livePromptText">Наведи камеру на лицо</span></div></div>
+      <div class="cam-controlbar"><button id="pauseCamera" class="cam-smallbtn" disabled>Стоп</button><div class="capture-control"><button id="captureBtn" class="shutter" disabled aria-label="Сделать пробный кадр"><span></span></button><span>Сделать кадр</span></div><label class="cam-smallbtn file-upload" for="photoUpload">Фото<input type="file" accept="image/*" id="photoUpload"></label></div>
+    </div>
+    <p class="privacy-line"><span aria-hidden="true">⌁</span> Только на твоём устройстве. Кадры не отправляются на наш сервер.</p>
+  </div>
+  <aside class="coach-panel">
+    <div class="coach-widget" id="coachWidget" data-mood="hello">
+      <div class="coach-title"><div class="friend-avatar"><svg aria-hidden="true"><use href="#kadr-friend"/></svg><span class="friend-presence"></span></div><div><span class="eyebrow">ТВОЙ КАРМАННЫЙ РЕЖИССЁР</span><h2>Кадрик <span class="friend-name-star">✦</span></h2><span class="friend-caption">Вместе найдём твой кадр</span></div></div>
+      <div class="conversation"><div class="message-meta"><span>Кадрик</span><span class="typing-dots" aria-label="Готов помочь"><i></i><i></i><i></i></span></div><div class="chat-bubble" id="chatBubble"><div class="main-tip" id="mainTip" role="status" aria-live="polite" aria-atomic="true">Эй, привет! Давай поймаем твой лучший кадр? Включи камеру — со светом и композицией помогу.</div><div class="message-sticker" id="messageSticker"><svg aria-hidden="true"><use id="moodIcon" href="#kadr-ready"/></svg><span id="stickerLabel">Я рядом!</span></div></div></div>
+      <div class="tips-heading">Наш чек-лист <span aria-hidden="true">↙</span></div>
+      <div class="tips-list" id="tipsList"><div class="tip"><span class="tipmark neutral">1</span><span>Телефон — на уровне глаз</span></div><div class="tip"><span class="tipmark neutral">2</span><span>Немного воздуха над головой</span></div><div class="tip"><span class="tipmark neutral">3</span><span>Мягкий свет перед тобой</span></div></div>
+      <div class="coach-foot"><span id="analysisState">Жду твою камеру</span><span id="scoreLabel">— / 3</span></div>
+    </div>
+    <section class="mode-section" aria-labelledby="modeHeading"><div class="section-label"><h2 id="modeHeading">Что снимаем?</h2><span>выбирай вайб</span></div><div class="mode-select"><button class="mode active" data-mode="talking" aria-pressed="true"><svg aria-hidden="true"><use href="#kadr-center"/></svg><strong>Говорящий Reels</strong><small>Для твоих историй</small></button><button class="mode" data-mode="selfie" aria-pressed="false"><svg aria-hidden="true"><use href="#kadr-ready"/></svg><strong>Красивое селфи</strong><small>Просто будь собой</small></button></div></section>
+    <div class="sticker-shelf"><span>С полуслова поймём друг друга</span><div><span class="mini-sticker"><svg aria-hidden="true"><use href="#kadr-light"/></svg>К свету</span><span class="mini-sticker"><svg aria-hidden="true"><use href="#kadr-center"/></svg>В центр</span><span class="mini-sticker"><svg aria-hidden="true"><use href="#kadr-distance"/></svg>Чуть дальше</span><span class="mini-sticker"><svg aria-hidden="true"><use href="#kadr-ready"/></svg>Готово!</span></div></div>
+    <div id="photoResult" class="result-widget" hidden><div class="result-header"><span>Лови твой кадр!</span><button id="closeResult" aria-label="Закрыть результат">×</button></div><img id="photoPreview" alt="Твой пробный снимок"><div id="resultText"></div><button class="btn ghost" id="downloadPhoto">Сохранить снимок ↧</button></div>
+    <div class="how-use"><strong>Как мы работаем вместе</strong><p>Включи камеру и следи за сообщениями Кадрика. Круглая кнопка делает снимок и проверяет его яркость.</p></div><div class="beta-warning">Кадрик ещё учится: свет оценивает приблизительно, предметы на фоне пока не распознаёт. Для анализа лица нужны интернет и поддержка браузера.</div>
+  </aside>
+</main>
+<script type="module" src="js/app.js"></script>
+</body></html>
